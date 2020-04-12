@@ -4,45 +4,54 @@ import './App.css';
 
 function App() {
 
-const [users, setUsers] = useState([])
+    const [users, setUsers] = useState([])
 
 
-const onSubmit = e => {
-  e.preventDefault();
-  const data = new FormData(e.target);
-  var object = {};
-  data.forEach((value, key) => {object[key] = value});
-  fetch('/api/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(object)
-  });
+    const onSubmit = e => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        let object = {};
+        data.forEach((value, key) => {
+            object[key] = value
+        });
+        fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(object)
+        });
+    }
+
+    useEffect(() => {
+        let eventSource = new EventSource('http://192.168.0.213:8080/api/users')
+        eventSource.onmessage = e => {
+            const parsedData = JSON.parse(e.data);
+            setUsers(users => [parsedData, ...users]);
+        }
+    }, []);
+
+
+    return (
+        <div className="Wrapper">
+            <form className="RegistrationForm" onSubmit={onSubmit} action="/api/register" method="post">
+                <label htmlFor="name">Имя</label><br/>
+                <input type="text" name="name" id="name"/><br/>
+                <label htmlFor="surname">Фамилия</label><br/>
+                <input type="text" name="surname" id="surname"/><br/>
+                <label htmlFor="grade">Класс</label><br/>
+                <select name="grade" id="grade">
+                    <option value="FIFTH">Пятый</option>
+                    <option value="SIXTH">Шестой</option>
+                </select>
+                <br/>
+                <button>Отправить</button>
+            </form>
+            <div className="UserList">
+                {users.map((user, i) => <p key={i}>{user.name} {user.surname} {user.grade}</p>)}
+            </div>
+        </div>
+    );
 }
 
-useEffect(() => {
-  let eventSource = new EventSource('http://localhost:8080/api/users')
-    eventSource.onmessage = e => {
-        const parsedData = JSON.parse(e.data);
-        setUsers((user) => users.concat(parsedData));
-    }}, [users]);
-
-
-  return (
-    <form onSubmit={onSubmit} action="/api/register" method="post">
-      <label for="name">Имя</label>
-      <input type="text" name="name"/>
-      <br/>
-      <label for="surname">Фамилия</label>
-      <input type="text" name="surname"/>
-      <br/>
-      <br/>
-      <label for="grade">Класс</label>
-      <input type="text" name="grade"/>
-      <button>Отправить</button>
-    {users.map((user) => <p>{user.name}  {user.surname}  {user.grade}</p>)}
-    </form>
-  );
-}
 export default App
