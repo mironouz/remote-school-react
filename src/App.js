@@ -14,7 +14,7 @@ function App() {
         data.forEach((value, key) => {
             object[key] = value
         });
-        fetch('/api/register', {
+        fetch('http://140.82.38.236:8081/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ function App() {
     }
 
     useEffect(() => {
-        let eventSource = new EventSource('http://192.168.0.213:8080/api/users')
+        let eventSource = new EventSource('http://140.82.38.236:8081/api/users')
         eventSource.onmessage = e => {
             const parsedData = JSON.parse(e.data);
             setUsers(users => [parsedData, ...users]);
@@ -34,7 +34,7 @@ function App() {
 
     return (
         <div className="Wrapper">
-            <form className="RegistrationForm" onSubmit={onSubmit} action="/api/register" method="post">
+            <form className="RegistrationForm" onSubmit={onSubmit}>
                 <label htmlFor="name">Имя</label><br/>
                 <input type="text" name="name" id="name"/><br/>
                 <label htmlFor="surname">Фамилия</label><br/>

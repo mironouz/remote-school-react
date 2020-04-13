@@ -1,0 +1,23 @@
+[Unit]
+Description=remote-school react frontend
+Documentation=https://github.com/mironouz/remote-school-react
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=30s
+ExecStartPre=-/usr/bin/docker kill remote-school-react
+ExecStartPre=-/usr/bin/docker rm remote-school-react
+ExecStartPre=/usr/bin/docker pull mironouz/remote-school:react
+ExecStart=/usr/bin/docker run \
+          --name remote-school-react \
+          --publish 80:80 \
+          mironouz/remote-school:react
+SyslogIdentifier=remote-school-react
+ExecStop=/usr/bin/docker stop remote-school-react
+
+[Install]
+WantedBy=multi-user.target
