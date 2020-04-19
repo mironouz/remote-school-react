@@ -14,7 +14,7 @@ function App() {
         data.forEach((value, key) => {
             object[key] = value
         });
-        fetch('http://140.82.38.236:8081/api/register', {
+        fetch('/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ function App() {
     }
 
     useEffect(() => {
-        let eventSource = new EventSource('http://140.82.38.236:8081/api/users')
+        let eventSource = new EventSource('api/api/users')
         eventSource.onmessage = e => {
             const parsedData = JSON.parse(e.data);
             setUsers(users => [parsedData, ...users]);

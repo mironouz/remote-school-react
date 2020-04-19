@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  reverseproxy:
+    image: mironouz/remote-school:nginx
+    ports:
+      - "80:80"
+    restart: always
+    links:
+      - api
+      - react
+
+  api:
+    image: mironouz/remote-school:api
+    ports:
+      - "8081:8080"
+    restart: always
+
+  react:
+    image: mironouz/remote-school:react
+    ports:
+      - "5000:5000"
+    restart: always
+    links:
+      - api
