@@ -24,7 +24,7 @@ function App() {
     }
 
     useEffect(() => {
-        let eventSource = new EventSource('api/api/users')
+        let eventSource = new EventSource('/api/users')
         eventSource.onmessage = e => {
             const parsedData = JSON.parse(e.data);
             setUsers(users => [parsedData, ...users]);
