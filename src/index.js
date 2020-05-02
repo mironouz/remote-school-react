@@ -3,10 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Registration from "./Registration";
+import {BrowserRouter, Route} from "react-router-dom";
+import App from "./App";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Registration />
+    <BrowserRouter>
+        <div>
+            <Route exact path="/" component={Registration}/>
+            <Route exact path="/home" component={App}/>
+        </div>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
