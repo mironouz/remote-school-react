@@ -1,9 +1,14 @@
-import React from "react";
+import React from "react"
+import { Tab, Tabs }  from "@material-ui/core"
 import './Registration.css'
 
 export default function Registration() {
     return (
         <div className="Wrapper">
+            <Tabs centered>
+                <Tab label="Registration"/>
+                <Tab label="Login"/>
+            </Tabs>
             <form className="RegistrationForm" onSubmit={onSubmit}>
                 <label htmlFor="name">Имя</label><br/>
                 <input type="text" name="name" id="name"/><br/>
@@ -15,7 +20,7 @@ export default function Registration() {
                     <option value="SIXTH">Шестой</option>
                 </select>
                 <br/>
-                <button>Отправить</button>
+                <button>Зарегестрироваться</button>
             </form>
         </div>
     );
@@ -35,10 +40,12 @@ const onSubmit = e => {
         },
         body: JSON.stringify(user)
     }).then(
-        _ => {
-            user.auth = window.btoa(user.name + ':' + user.surname)
-            localStorage.setItem('user', JSON.stringify(user))
-            window.location.href = '/home'
+        response => {
+            if (response.status !== 202) {
+                alert('Unknown error. Status code ' + response.status)
+                return
+            }
+            alert('You have registered as ' + user.name + ' ' + user.surname)
         }
     );
 }
