@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import {Tab, Tabs} from "@material-ui/core"
 import './Registration.css'
-import {BrowserRouter, Link, Route, Switch, useLocation} from "react-router-dom"
+import {BrowserRouter, Link, Redirect, Route, Switch, useLocation} from "react-router-dom"
 
 export default function RootForm() {
     let location = useLocation().pathname
@@ -21,6 +21,7 @@ export default function RootForm() {
                 <Switch>
                     <Route exact path="/registration" component={Registration} />
                     <Route exact path="/login" component={Login} />
+                    <Redirect to="/registration" />
                 </Switch>
             </div>
         </BrowserRouter>
@@ -52,6 +53,12 @@ function Login() {
             <input type="text" name="name" id="name"/><br/>
             <label htmlFor="surname">Фамилия</label><br/>
             <input type="text" name="surname" id="surname"/><br/>
+            <label htmlFor="grade">Класс</label><br/>
+            <select name="grade" id="grade">
+                <option value="FIFTH">Пятый</option>
+                <option value="SIXTH">Шестой</option>
+            </select>
+            <br/>
             <button>Войти</button>
         </form>
     );
