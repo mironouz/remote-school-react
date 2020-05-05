@@ -1,10 +1,11 @@
 import React, {useState} from "react"
-import { Tab, Tabs }  from "@material-ui/core"
+import {Tab, Tabs} from "@material-ui/core"
 import './Registration.css'
-import { BrowserRouter, Route, Link, Switch, Redirect } from "react-router-dom"
+import {BrowserRouter, Link, Route, Switch, useLocation} from "react-router-dom"
 
-export default function RootForm(props) {
-    const [activeTab, setActiveTab] = useState(0)
+export default function RootForm() {
+    let location = useLocation().pathname
+    const [activeTab, setActiveTab] = useState(getActiveTab(location))
 
     return (
         <BrowserRouter>
@@ -20,9 +21,6 @@ export default function RootForm(props) {
                 <Switch>
                     <Route exact path="/registration" component={Registration} />
                     <Route exact path="/login" component={Login} />
-                    <Route path="*">
-                        <Redirect to="/registration" />
-                    </Route>
                 </Switch>
             </div>
         </BrowserRouter>
@@ -49,7 +47,7 @@ function Registration() {
 
 function Login() {
     return (
-        <form className="RegistrationForm" onSubmit={register}>
+        <form className="RegistrationForm" onSubmit={login}>
             <label htmlFor="name">Имя</label><br/>
             <input type="text" name="name" id="name"/><br/>
             <label htmlFor="surname">Фамилия</label><br/>
@@ -81,4 +79,24 @@ const register = e => {
             alert('Вы зарегестрировались как ' + user.name + ' ' + user.surname)
         }
     );
+}
+
+const login = e => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    let user = {};
+    data.forEach((value, key) => {
+        user[key] = value
+    });
+    user.auth = window.btoa(user.name + ':' + user.surname)
+    localStorage.setItem('user', JSON.stringify(user))
+    window.location.href = '/home'
+}
+
+const getActiveTab = path => {
+    switch(path) {
+        case '/registration': return 0;
+        case '/login': return 1;
+        default: return 0;
+    }
 }
