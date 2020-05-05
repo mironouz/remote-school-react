@@ -1,32 +1,65 @@
-import React from "react"
+import React, {useState} from "react"
 import { Tab, Tabs }  from "@material-ui/core"
 import './Registration.css'
+import { BrowserRouter, Route, Link, Switch, Redirect } from "react-router-dom"
 
-export default function Registration() {
+export default function RootForm(props) {
+    const [activeTab, setActiveTab] = useState(0)
+
     return (
-        <div className="Wrapper">
-            <Tabs centered>
-                <Tab label="Registration"/>
-                <Tab label="Login"/>
-            </Tabs>
-            <form className="RegistrationForm" onSubmit={onSubmit}>
-                <label htmlFor="name">Имя</label><br/>
-                <input type="text" name="name" id="name"/><br/>
-                <label htmlFor="surname">Фамилия</label><br/>
-                <input type="text" name="surname" id="surname"/><br/>
-                <label htmlFor="grade">Класс</label><br/>
-                <select name="grade" id="grade">
-                    <option value="FIFTH">Пятый</option>
-                    <option value="SIXTH">Шестой</option>
-                </select>
-                <br/>
-                <button>Зарегестрироваться</button>
-            </form>
-        </div>
+        <BrowserRouter>
+            <div className="Wrapper">
+                <Tabs
+                    value={activeTab}
+                    onChange={(e, v) => setActiveTab(v)}
+                    centered
+                >
+                    <Tab label="Регистрация" component={Link} to='/registration' />
+                    <Tab label="Вход" component={Link} to='/login' />
+                </Tabs>
+                <Switch>
+                    <Route exact path="/registration" component={Registration} />
+                    <Route exact path="/login" component={Login} />
+                    <Route path="*">
+                        <Redirect to="/registration" />
+                    </Route>
+                </Switch>
+            </div>
+        </BrowserRouter>
     );
 }
 
-const onSubmit = e => {
+function Registration() {
+    return (
+        <form className="RegistrationForm" onSubmit={register}>
+            <label htmlFor="name">Имя</label><br/>
+            <input type="text" name="name" id="name"/><br/>
+            <label htmlFor="surname">Фамилия</label><br/>
+            <input type="text" name="surname" id="surname"/><br/>
+            <label htmlFor="grade">Класс</label><br/>
+            <select name="grade" id="grade">
+                <option value="FIFTH">Пятый</option>
+                <option value="SIXTH">Шестой</option>
+            </select>
+            <br/>
+            <button>Зарегестрироваться</button>
+        </form>
+    );
+}
+
+function Login() {
+    return (
+        <form className="RegistrationForm" onSubmit={register}>
+            <label htmlFor="name">Имя</label><br/>
+            <input type="text" name="name" id="name"/><br/>
+            <label htmlFor="surname">Фамилия</label><br/>
+            <input type="text" name="surname" id="surname"/><br/>
+            <button>Войти</button>
+        </form>
+    );
+}
+
+const register = e => {
     e.preventDefault();
     const data = new FormData(e.target);
     let user = {};
@@ -42,10 +75,10 @@ const onSubmit = e => {
     }).then(
         response => {
             if (response.status !== 202) {
-                alert('Unknown error. Status code ' + response.status)
+                alert('Неизвестная ошибка. Код ' + response.status)
                 return
             }
-            alert('You have registered as ' + user.name + ' ' + user.surname)
+            alert('Вы зарегестрировались как ' + user.name + ' ' + user.surname)
         }
     );
 }
