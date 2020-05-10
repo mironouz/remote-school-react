@@ -39,8 +39,11 @@ function Registration() {
             <select name="grade" id="grade">
                 <option value="FIFTH">Пятый</option>
                 <option value="SIXTH">Шестой</option>
-            </select>
-            <br/>
+            </select><br/>
+            <label htmlFor="email">Email</label><br/>
+            <input type="text" name="email" id="email"/><br/>
+            <label htmlFor="password">Пароль</label><br/>
+            <input type="password" name="password" id="password"/><br/>
             <button>Зарегестрироваться</button>
         </form>
     );
@@ -49,16 +52,10 @@ function Registration() {
 function Login() {
     return (
         <form className="RegistrationForm" onSubmit={login}>
-            <label htmlFor="name">Имя</label><br/>
-            <input type="text" name="name" id="name"/><br/>
-            <label htmlFor="surname">Фамилия</label><br/>
-            <input type="text" name="surname" id="surname"/><br/>
-            <label htmlFor="grade">Класс</label><br/>
-            <select name="grade" id="grade">
-                <option value="FIFTH">Пятый</option>
-                <option value="SIXTH">Шестой</option>
-            </select>
-            <br/>
+            <label htmlFor="email">Email</label><br/>
+            <input type="text" name="email" id="email"/><br/>
+            <label htmlFor="password">Пароль</label><br/>
+            <input type="password" name="password" id="password"/><br/>
             <button>Войти</button>
         </form>
     );
@@ -79,11 +76,20 @@ const register = e => {
         body: JSON.stringify(user)
     }).then(
         response => {
-            if (response.status !== 202) {
-                alert('Неизвестная ошибка. Код ' + response.status)
-                return
+            switch (response.status) {
+                case 202: {
+                    alert('Вы зарегестрировались как ' + user.name + ' ' + user.surname)
+                    return
+                }
+                case 409: {
+                    alert('Пользователь ' + user.name + ' ' + user.surname + ' уже существует')
+                    return
+                }
+                default: {
+                    alert('Неизвестная ошибка. Код ' + response.status)
+                    return
+                }
             }
-            alert('Вы зарегестрировались как ' + user.name + ' ' + user.surname)
         }
     );
 }
@@ -95,7 +101,7 @@ const login = e => {
     data.forEach((value, key) => {
         user[key] = value
     });
-    user.auth = window.btoa(user.name + ':' + user.surname)
+    user.auth = window.btoa(user.email + ':' + user.password)
     localStorage.setItem('user', JSON.stringify(user))
     window.location.href = '/home'
 }

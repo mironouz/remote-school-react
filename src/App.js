@@ -38,7 +38,6 @@ const sendMessage = e => {
     const data = new FormData(e.target);
     let user = JSON.parse(localStorage.getItem('user'))
     let message = {};
-    message.user = {'name': user.name, 'surname': user.surname, 'grade': user.grade}
     message.timestamp = Date.now()
     data.forEach((value, key) => {
         message[key] = value
