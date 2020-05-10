@@ -15,13 +15,13 @@ export default function RootForm() {
                     onChange={(e, v) => setActiveTab(v)}
                     centered
                 >
-                    <Tab label="Регистрация" component={Link} to='/registration' />
                     <Tab label="Вход" component={Link} to='/login' />
+                    <Tab label="Регистрация" component={Link} to='/registration' />
                 </Tabs>
                 <Switch>
-                    <Route exact path="/registration" component={Registration} />
                     <Route exact path="/login" component={Login} />
-                    <Redirect to="/registration" />
+                    <Route exact path="/registration" component={Registration} />
+                    <Redirect to="/login" />
                 </Switch>
             </div>
         </BrowserRouter>
@@ -102,14 +102,35 @@ const login = e => {
         user[key] = value
     });
     let auth = window.btoa(user.email + ':' + user.password)
-    localStorage.setItem('auth', JSON.stringify(auth))
-    window.location.href = '/home'
+    fetch('/api/checkUser', {
+        headers: {
+            'Authorization': 'Basic ' + auth
+        }
+    }).then(
+        response => {
+            switch (response.status) {
+                case 200: {
+                    localStorage.setItem('auth', JSON.stringify(auth))
+                    window.location.href = '/home'
+                    return
+                }
+                case 401: {
+                    alert('Неверный пароль или данный пользователь не существует')
+                    return
+                }
+                default: {
+                    alert('Неизвестная ошибка. Код ' + response.status)
+                    return
+                }
+            }
+        }
+    );
 }
 
 const getActiveTab = path => {
     switch(path) {
-        case '/registration': return 0;
-        case '/login': return 1;
+        case '/login': return 0;
+        case '/registration': return 1;
         default: return 0;
     }
 }

@@ -15,7 +15,7 @@ ReactDOM.render(
                 <Route exact path="/home" component={App}/>
                 <Route exact path="/registration" component={RootForm} />
                 <Route exact path="/login" component={RootForm} />
-                <Redirect to="/registration" />
+                <Redirect to="/" />
             </Switch>
         </div>
     </BrowserRouter>
