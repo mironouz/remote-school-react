@@ -6,10 +6,10 @@ export default function App() {
     const [messages, setMessages] = useState([])
 
     useEffect(() => {
-        let user = JSON.parse(localStorage.getItem('user'))
+        let auth = JSON.parse(localStorage.getItem('auth'))
         let userMessages = new window.EventSourcePolyfill('/api/messages', {
             headers: {
-                'Authorization': 'Basic ' + user.auth
+                'Authorization': 'Basic ' + auth
             }})
         userMessages.onmessage = e => {
             const parsedData = JSON.parse(e.data);
@@ -25,6 +25,7 @@ export default function App() {
                 <input type="text" name="text" id="text"/><br/>
                 <button>Отправить</button>
             </form>
+            <button className="logoutButton" onClick={logout}>Выйти</button>
             <div className="UserList">
                 {messages.map((m, i) =>
                     <p key={i}>{m.user.name} {m.user.surname} : {m.text} {m.timestamp}</p>)}
@@ -36,7 +37,7 @@ export default function App() {
 const sendMessage = e => {
     e.preventDefault();
     const data = new FormData(e.target);
-    let user = JSON.parse(localStorage.getItem('user'))
+    let auth = JSON.parse(localStorage.getItem('auth'))
     let message = {};
     message.timestamp = Date.now()
     data.forEach((value, key) => {
@@ -46,8 +47,14 @@ const sendMessage = e => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + user.auth
+            'Authorization': 'Basic ' + auth
         },
         body: JSON.stringify(message)
     }).then()
+}
+
+const logout = e => {
+    e.preventDefault()
+    localStorage.removeItem('auth')
+    window.location.href = '/'
 }

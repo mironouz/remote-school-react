@@ -6,10 +6,19 @@
   padding: 20px;
   text-align: left;
   height: 100vh;
+  grid-column: 1 / -1;
 }
 
 .Wrapper {
   background-color: #282c34;
   font-size: calc(10px + 2vmin);
   color: white;
+  display: grid;
+  grid-template-columns: 300px auto;
+  grid-auto-rows: 150px auto;
+}
+
+.logoutButton {
+  align-self: start;
+  justify-self: start;
 }

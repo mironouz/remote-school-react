@@ -9,7 +9,7 @@ export default function RootForm() {
 
     return (
         <BrowserRouter>
-            <div className="Wrapper">
+            <div className="RegistrationWrapper">
                 <Tabs
                     value={activeTab}
                     onChange={(e, v) => setActiveTab(v)}
@@ -101,8 +101,8 @@ const login = e => {
     data.forEach((value, key) => {
         user[key] = value
     });
-    user.auth = window.btoa(user.email + ':' + user.password)
-    localStorage.setItem('user', JSON.stringify(user))
+    let auth = window.btoa(user.email + ':' + user.password)
+    localStorage.setItem('auth', JSON.stringify(auth))
     window.location.href = '/home'
 }
 
