@@ -103,9 +103,11 @@ const login = e => {
     });
     let auth = window.btoa(user.email + ':' + user.password)
     fetch('/api/checkUser', {
+        method: 'POST',
         headers: {
-            'Authorization': 'Basic ' + auth
-        }
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
     }).then(
         response => {
             switch (response.status) {
@@ -114,8 +116,12 @@ const login = e => {
                     window.location.href = '/home'
                     return
                 }
-                case 401: {
-                    alert('Неверный пароль или данный пользователь не существует')
+                case 400: {
+                    alert('Пользователь не существует')
+                    return
+                }
+                case 409: {
+                    alert('Неверный пароль')
                     return
                 }
                 default: {
