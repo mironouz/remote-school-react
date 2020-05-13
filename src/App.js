@@ -4,6 +4,7 @@ import 'eventsource/example/eventsource-polyfill'
 
 export default function App() {
     const [messages, setMessages] = useState([])
+    const [exercises, setExercises] = useState([])
 
     useEffect(() => {
         let auth = JSON.parse(localStorage.getItem('auth'))
@@ -11,11 +12,21 @@ export default function App() {
             headers: {
                 'Authorization': 'Basic ' + auth
             }})
+
+        fetch('/api/exercises', {
+            headers: {
+                'Authorization': 'Basic ' + auth
+            }
+        })
+            .then(response => response.json())
+            .then(exercises => setExercises(exercises))
+
         userMessages.onmessage = e => {
             const parsedData = JSON.parse(e.data);
             setMessages(messages => [parsedData, ...messages]);
         }
         userMessages.onopen = _ => setMessages([])
+        userMessages.onerror = _ => setMessages([])
     }, []);
 
     return (
@@ -29,6 +40,13 @@ export default function App() {
             <div className="UserList">
                 {messages.map((m, i) =>
                     <p key={i}>{m.user.name} {m.user.surname} : {m.text} {m.timestamp}</p>)}
+            </div>
+            <div>
+                {exercises.map((ex) =>
+                    <div key={ex.id}>
+                        <h1>{ex.title}</h1>
+                        <p>{ex.description}</p>
+                    </div>)}
             </div>
         </div>
     );
