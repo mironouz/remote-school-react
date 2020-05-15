@@ -13,11 +13,19 @@
   font-size: calc(10px + 2vmin);
   color: white;
   display: grid;
-  grid-template-columns: 300px auto;
+  grid-template-columns: 60% 40%;
   grid-auto-rows: 140px auto;
 }
 
 .logoutButton {
   align-self: center;
   justify-self: start;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
