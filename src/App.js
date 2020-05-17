@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import './App.css';
+import React, {useEffect, useState} from 'react'
+import './App.css'
 import 'eventsource/example/eventsource-polyfill'
-import {BrowserRouter, Link, Route} from "react-router-dom";
-import Exercise from "./Exercise";
+import {BrowserRouter, Link, Route} from 'react-router-dom'
+import {Launcher} from 'react-chat-window'
+import Exercise from "./Exercise"
 
 export default function App() {
     const [messages, setMessages] = useState([])
@@ -24,49 +25,47 @@ export default function App() {
             .then(exercises => setExercises(exercises))
 
         userMessages.onmessage = e => {
-            const parsedData = JSON.parse(e.data);
-            setMessages(messages => [parsedData, ...messages]);
+            const data = JSON.parse(e.data);
+            const text = `${data.timestamp}\n${data.user.name} ${data.user.surname}\n${data.text}`
+            const message = {author: 'them', data: {text: text}, type: 'text'}
+            if (!messages.some(m => m.data.text === message.data.text)) {
+                setMessages(messages => [...messages, message]);
+            }
         }
-        userMessages.onopen = _ => setMessages([])
-        userMessages.onerror = _ => setMessages([])
     }, []);
 
     return (
         <BrowserRouter>
             <div className="Wrapper">
-                <form className="MessageForm" onSubmit={sendMessage}>
-                    <label htmlFor="text">Текст сообщения</label><br/>
-                    <input type="text" name="text" id="text"/><br/>
-                    <button>Отправить</button>
-                </form>
                 <button className="logoutButton" onClick={logout}>Выйти</button>
-                <div className="UserList">
-                    {messages.map((m, i) =>
-                        <p key={i}>{m.user.name} {m.user.surname} : {m.text} {m.timestamp}</p>)}
-                </div>
                 <div>
                     {exercises.map((ex) =>
                         <div key={ex.id}>
                             <h1><Link to={'/exercise/' + ex.id}>{ex.title}</Link></h1>
                         </div>)}
                 </div>
-                <div className='popup'>
+                <div>
                     <Route exact path="/exercise/:id" component={Exercise} />
                 </div>
             </div>
+            <Launcher
+                agentProfile={{
+                    teamName: 'Чат'
+                }}
+                onMessageWasSent={sendMessage}
+                messageList={messages}
+                showEmoji={false}
+            />
         </BrowserRouter>
     );
 }
 
-const sendMessage = e => {
-    e.preventDefault();
-    const data = new FormData(e.target);
+const sendMessage = m => {
+    console.log(m)
     let auth = JSON.parse(localStorage.getItem('auth'))
     let message = {};
+    message.text = m.data.text
     message.timestamp = Date.now()
-    data.forEach((value, key) => {
-        message[key] = value
-    });
     fetch('/api/message', {
         method: 'POST',
         headers: {

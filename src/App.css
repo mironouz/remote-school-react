@@ -2,30 +2,26 @@
   overflow: auto;
 }
 
-.UserList {
-  padding: 20px;
-  text-align: left;
-  height: 100vh;
-}
-
 .Wrapper {
   background-color: #282c34;
   font-size: calc(10px + 2vmin);
   color: white;
   display: grid;
   grid-template-columns: 60% 40%;
-  grid-auto-rows: 140px auto;
+  grid-auto-rows: 20px auto;
+  height: 100vh;
 }
 
 .logoutButton {
-  align-self: center;
-  justify-self: start;
+  grid-column: 1 / -1;
+  align-self: start;
+  justify-self: end;
 }
 
-.popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+.sc-user-input--button {
+  visibility: hidden;
+}
+
+.sc-header--close-button {
+  visibility: hidden;
 }
