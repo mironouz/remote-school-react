@@ -18,10 +18,28 @@
   justify-self: end;
 }
 
-.sc-user-input--button {
+.sc-header--close-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.sc-header--close-button::after {
+  margin: auto;
+  content: 'X';
+}
+
+.sc-user-input--file-icon-wrapper {
   visibility: hidden;
 }
 
-.sc-header--close-button {
+.sc-header--close-button img {
+  position: absolute;
+  left: 0;
+  top: 0;
   visibility: hidden;
+}
+
+.sc-user-input--text::-webkit-scrollbar {
+  display: none;
 }

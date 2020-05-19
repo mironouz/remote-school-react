@@ -8,14 +8,10 @@ import Exercise from "./Exercise"
 export default function App() {
     const [messages, setMessages] = useState([])
     const [exercises, setExercises] = useState([])
+    const [listening, setListening] = useState(false)
 
     useEffect(() => {
-        let auth = JSON.parse(localStorage.getItem('auth'))
-        let userMessages = new window.EventSourcePolyfill('/api/messages', {
-            headers: {
-                'Authorization': 'Basic ' + auth
-            }})
-
+        const auth = JSON.parse(localStorage.getItem('auth'))
         fetch('/api/exercises', {
             headers: {
                 'Authorization': 'Basic ' + auth
@@ -24,15 +20,20 @@ export default function App() {
             .then(response => response.json())
             .then(exercises => setExercises(exercises))
 
-        userMessages.onmessage = e => {
-            const data = JSON.parse(e.data);
-            const text = `${data.timestamp}\n${data.user.name} ${data.user.surname}\n${data.text}`
-            const message = {author: 'them', data: {text: text}, type: 'text'}
-            if (!messages.some(m => m.data.text === message.data.text)) {
-                setMessages(messages => [...messages, message]);
+        if(!listening) {
+            const eventSource = new window.EventSourcePolyfill('/api/messages', {
+                headers: {
+                    'Authorization': 'Basic ' + auth
+                }})
+            eventSource.onmessage = e => {
+                const data = JSON.parse(e.data);
+                const text = `${data.timestamp}\n${data.user.name} ${data.user.surname}\n${data.text}`
+                const message = {author: 'them', data: {text: text}, type: 'text'}
+                setMessages(messages => messages.concat(message))
             }
+            setListening(true)
         }
-    }, []);
+    }, [listening]);
 
     return (
         <BrowserRouter>
@@ -55,13 +56,13 @@ export default function App() {
                 onMessageWasSent={sendMessage}
                 messageList={messages}
                 showEmoji={false}
+                mute={true}
             />
         </BrowserRouter>
     );
 }
 
 const sendMessage = m => {
-    console.log(m)
     let auth = JSON.parse(localStorage.getItem('auth'))
     let message = {};
     message.text = m.data.text
