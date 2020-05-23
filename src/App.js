@@ -6,34 +6,34 @@ import {Launcher} from 'react-chat-window'
 import Exercise from "./Exercise"
 
 export default function App() {
+    const auth = JSON.parse(localStorage.getItem('auth'))
     const [messages, setMessages] = useState([])
     const [exercises, setExercises] = useState([])
-    const [listening, setListening] = useState(false)
 
     useEffect(() => {
-        const auth = JSON.parse(localStorage.getItem('auth'))
         fetch('/api/exercises', {
             headers: {
                 'Authorization': 'Basic ' + auth
             }
         })
-            .then(response => response.json())
-            .then(exercises => setExercises(exercises))
+        .then(response => response.json())
+        .then(exercises => setExercises(exercises))
 
-        if(!listening) {
-            const eventSource = new window.EventSourcePolyfill('/api/messages', {
+        const eventSource = new window.EventSourcePolyfill('/api/messages', {
                 headers: {
                     'Authorization': 'Basic ' + auth
                 }})
-            eventSource.onmessage = e => {
+
+        eventSource.onmessage = e => {
+            if (e.data !== "heartbeat") {
                 const data = JSON.parse(e.data);
                 const text = `${data.timestamp}\n${data.user.name} ${data.user.surname}\n${data.text}`
                 const message = {author: 'them', data: {text: text}, type: 'text'}
                 setMessages(messages => messages.concat(message))
             }
-            setListening(true)
         }
-    }, [listening]);
+        return () => eventSource.close()
+    }, []);
 
     return (
         <BrowserRouter>
