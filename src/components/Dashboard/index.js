@@ -1,19 +1,20 @@
 import React, {useEffect, useState} from 'react'
-import './App.css'
+import './style.css'
 import 'eventsource/example/eventsource-polyfill'
 import {BrowserRouter, Link, Route} from 'react-router-dom'
 import {Launcher} from 'react-chat-window'
-import Exercise from "./Exercise"
+import Exercise from "../Exercise"
+import {getAuth} from "../../services/utils";
+import {logout, sendMessage} from "./lib/helpers";
 
-export default function App() {
-    const auth = JSON.parse(localStorage.getItem('auth'))
+export default function Dashboard() {
     const [messages, setMessages] = useState([])
     const [exercises, setExercises] = useState([])
 
     useEffect(() => {
         fetch('/api/exercises', {
             headers: {
-                'Authorization': 'Basic ' + auth
+                'Authorization': 'Basic ' + getAuth()
             }
         })
         .then(response => response.json())
@@ -21,7 +22,7 @@ export default function App() {
 
         const eventSource = new window.EventSourcePolyfill('/api/messages', {
                 headers: {
-                    'Authorization': 'Basic ' + auth
+                    'Authorization': 'Basic ' + getAuth()
                 }})
 
         eventSource.onmessage = e => {
@@ -60,25 +61,4 @@ export default function App() {
             />
         </BrowserRouter>
     );
-}
-
-const sendMessage = m => {
-    let auth = JSON.parse(localStorage.getItem('auth'))
-    let message = {};
-    message.text = m.data.text
-    message.timestamp = Date.now()
-    fetch('/api/message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + auth
-        },
-        body: JSON.stringify(message)
-    }).then()
-}
-
-const logout = e => {
-    e.preventDefault()
-    localStorage.removeItem('auth')
-    window.location.href = '/'
 }

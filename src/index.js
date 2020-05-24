@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import RootForm from "./Registration";
+import RootForm from "./components/RootForm";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
-import App from "./App";
+import Dashboard from "./components/Dashboard";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -12,7 +12,7 @@ ReactDOM.render(
         <div>
             <Switch>
                 <Route exact path="/" component={RootForm}/>
-                <Route exact path="/home" component={App}/>
+                <Route exact path="/home" component={Dashboard}/>
                 <Route exact path="/registration" component={RootForm} />
                 <Route exact path="/login" component={RootForm} />
                 <Redirect to="/" />
@@ -23,7 +23,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();

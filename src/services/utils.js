@@ -1,0 +1,1 @@
+export const getAuth = () => JSON.parse(localStorage.getItem('auth'))

@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
+import {getAuth} from "../../services/utils";
 
-const Exercise = ({match}) => {
+export default function Exercise({match}) {
     const [exercise, setExercise] = useState({})
 
     useEffect(() => {
-        let auth = JSON.parse(localStorage.getItem('auth'))
         fetch('/api/exercise/' + match.params.id, {
             headers: {
-                'Authorization': 'Basic ' + auth
+                'Authorization': 'Basic ' + getAuth()
             }
         })
             .then(response => response.json())
@@ -21,5 +21,3 @@ const Exercise = ({match}) => {
         </div>
     )
 }
-
-export default Exercise
