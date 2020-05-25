@@ -2,8 +2,17 @@ import React from "react";
 import {registerUser} from "./lib/helpers";
 
 export function RegistrationForm() {
+    const getDataFromFormAndRegister = e => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        let user = {};
+        data.forEach((value, key) => {
+            user[key] = value
+        });
+        registerUser(user)
+    }
     return (
-        <form className="RegistrationForm" onSubmit={registerUser}>
+        <form className="RegistrationForm" onSubmit={getDataFromFormAndRegister}>
             <label htmlFor="name">Имя</label><br/>
             <input type="text" name="name" id="name"/><br/>
             <label htmlFor="surname">Фамилия</label><br/>

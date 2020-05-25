@@ -1,8 +1,8 @@
 import {getAuth} from "../../../services/utils";
 
-export const sendMessage = m => {
+export const sendMessage = chatInput => {
     let message = {};
-    message.text = m.data.text
+    message.text = chatInput.data.text
     message.timestamp = Date.now()
     fetch('/api/message', {
         method: 'POST',
@@ -14,8 +14,7 @@ export const sendMessage = m => {
     }).then()
 }
 
-export const logout = e => {
-    e.preventDefault()
+export const logout = () => {
     localStorage.removeItem('auth')
     window.location.href = '/'
 }
