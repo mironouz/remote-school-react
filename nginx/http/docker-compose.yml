@@ -6,17 +6,12 @@ services:
     image: mironouz/remote-school:nginx
     ports:
       - "80:80"
-      - "443:443"
     restart: always
     depends_on:
       - backend
       - frontend
     networks:
       - app-network
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
 
   backend:
     container_name: backend
@@ -37,22 +32,6 @@ services:
       - backend
     networks:
       - app-network
-
-  certbot:
-    container_name: certbot
-    image: certbot/certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    depends_on:
-      - reverseproxy
-    command: certonly --webroot --webroot-path=/var/www/html --email mironouz@gmail.com --agree-tos --no-eff-email --force-renewal -d mironouz.xyz
-
-volumes:
-  certbot-etc:
-  certbot-var:
-  web-root:
 
 networks:
   app-network:
