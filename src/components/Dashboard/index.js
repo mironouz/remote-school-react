@@ -20,7 +20,7 @@ export default function Dashboard() {
         .then(response => response.json())
         .then(exercises => setExercises(exercises))
 
-        const eventSource = new window.EventSource('http://localhost:8080/api/messages', {
+        const eventSource = new window.EventSourcePolyfill('/api/messages', {
                 headers: {
                     'Authorization': 'Basic ' + getAuth()
                 }})

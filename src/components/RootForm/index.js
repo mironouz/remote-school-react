@@ -10,6 +10,8 @@ function getForm(tab) {
             return <LoginForm/>
         case 1:
             return <RegistrationForm />
+        default:
+            return 0
     }
 }
 
