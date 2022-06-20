@@ -1,30 +1,31 @@
 import React, {useState} from "react"
-import {Tab, Tabs} from "@material-ui/core"
+import {Tab, Tabs} from "@mui/material"
 import './style.css'
-import {BrowserRouter, Link, Redirect, Route, Switch, useLocation} from "react-router-dom"
 import {LoginForm} from "../LoginForm";
 import {RegistrationForm} from "../RegistrationForm";
-import {getActiveTab} from "./lib/helpers";
+
+function getForm(tab) {
+    switch (tab) {
+        case 0:
+            return <LoginForm/>
+        case 1:
+            return <RegistrationForm />
+    }
+}
 
 export default function RootForm() {
-    const [activeTab, setActiveTab] = useState(getActiveTab(useLocation().pathname))
+    const [activeTab, setActiveTab] = useState(0)
     return (
-        <BrowserRouter>
             <div className="RegistrationWrapper">
                 <Tabs
                     value={activeTab}
                     onChange={(e, v) => setActiveTab(v)}
                     centered
                 >
-                    <Tab label="Вход" component={Link} to='/login' />
-                    <Tab label="Регистрация" component={Link} to='/registration' />
+                    <Tab label="Вход"/>
+                    <Tab label="Регистрация"/>
                 </Tabs>
-                <Switch>
-                    <Route exact path="/login" component={LoginForm} />
-                    <Route exact path="/registration" component={RegistrationForm} />
-                    <Redirect to="/login" />
-                </Switch>
+                {getForm(activeTab)}
             </div>
-        </BrowserRouter>
     );
 }

@@ -12,7 +12,10 @@ describe('LoginForm component util functions', () => {
 
     test('No alert on 200 status code and put auth to local storage', async () => {
         fetchMock.mock('/api/checkUser', {status: 200})
-        window.location.assign = jest.fn()
+        delete window.location
+        window.location = {
+            assign: jest.fn(),
+        }
         await login(testUser)
         expect(localStorage.getItem('auth')).not.toBeNull()
         expect(window.alert).not.toBeCalled()

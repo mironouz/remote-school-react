@@ -1,26 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import RootForm from "./components/RootForm";
-import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 
-ReactDOM.render(
+
+const root = ReactDOM.createRoot(document.getElementById("root"))
+root.render(
   <React.StrictMode>
     <BrowserRouter>
-        <div>
-            <Switch>
-                <Route exact path="/" component={RootForm}/>
-                <Route exact path="/home" component={Dashboard}/>
-                <Route exact path="/registration" component={RootForm} />
-                <Route exact path="/login" component={RootForm} />
-                <Redirect to="/" />
-            </Switch>
-        </div>
+        <Routes>
+            <Route path="/" element={<RootForm />} />
+            <Route path="home" element={<Dashboard />} />
+        </Routes>
     </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 serviceWorker.register();

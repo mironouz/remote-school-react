@@ -43,3 +43,7 @@
 .sc-user-input--text::-webkit-scrollbar {
   display: none;
 }
+
+a {
+  color: inherit;
+}

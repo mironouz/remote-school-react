@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './style.css'
 import 'eventsource/example/eventsource-polyfill'
-import {BrowserRouter, Link, Route} from 'react-router-dom'
 import {Launcher} from 'react-chat-window'
 import Exercise from "../Exercise"
 import {getAuth} from "../../services/utils";
@@ -10,6 +9,7 @@ import {logout, sendMessage} from "./lib/helpers";
 export default function Dashboard() {
     const [messages, setMessages] = useState([])
     const [exercises, setExercises] = useState([])
+    const [currentExercise, setCurrentExercise] = useState(0)
 
     useEffect(() => {
         fetch('/api/exercises', {
@@ -20,7 +20,7 @@ export default function Dashboard() {
         .then(response => response.json())
         .then(exercises => setExercises(exercises))
 
-        const eventSource = new window.EventSourcePolyfill('/api/messages', {
+        const eventSource = new window.EventSource('http://localhost:8080/api/messages', {
                 headers: {
                     'Authorization': 'Basic ' + getAuth()
                 }})
@@ -37,17 +37,17 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <BrowserRouter>
+        <div>
             <div className="Wrapper">
                 <button className="logoutButton" onClick={logout}>Выйти</button>
                 <div>
                     {exercises.map((ex) =>
                         <div key={ex.id}>
-                            <h1><Link to={'/exercise/' + ex.id}>{ex.title}</Link></h1>
+                            <h1><button onClick={setCurrentExercise.bind(this, ex.id)}>{ex.title}</button></h1>
                         </div>)}
                 </div>
                 <div>
-                    <Route exact path="/exercise/:id" component={Exercise} />
+                    <Exercise id={currentExercise}/>
                 </div>
             </div>
             <Launcher
@@ -59,6 +59,6 @@ export default function Dashboard() {
                 showEmoji={false}
                 mute={true}
             />
-        </BrowserRouter>
+        </div>
     );
 }
